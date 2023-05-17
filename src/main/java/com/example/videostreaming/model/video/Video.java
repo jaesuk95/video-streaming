@@ -20,4 +20,12 @@ public class Video {
     private String directory;
     private boolean isPrivate;
     private boolean isPaid;
+
+    public Video(String name, String userId, String directory, boolean isPrivate, boolean isPaid) {
+        this.name = name;
+        this.userId = userId;
+        this.directory = directory;
+        this.isPrivate = isPrivate;
+        this.isPaid = isPaid;
+    }
 }

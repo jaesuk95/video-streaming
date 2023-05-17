@@ -13,6 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Service
 @Slf4j
@@ -20,20 +24,32 @@ import java.io.IOException;
 public class VideoServiceImpl implements VideoService {
 
     private final ResourceLoader resourceLoader;
-    private static final String FORMAT="classpath:video/%s.mp4";
+    private static final String FORMAT = "classpath:video/%s.mp4";
     private final VideoRepository videoRepository;
 
-    public Mono<Resource> getVideo(String title){
-        return Mono.fromSupplier(()->resourceLoader.
-                getResource(String.format(FORMAT,title)))   ;
+    public Mono<Resource> getVideo(String title) {
+        return Mono.fromSupplier(() -> resourceLoader.
+                getResource(String.format(FORMAT, title)));
     }
 
     @Override
-    public void saveVideo(MultipartFile file, String name) {
-        if(videoRepository.existsByName(name)){
+    public void saveVideo(MultipartFile file, String name) throws IOException {
+        if (videoRepository.existsByName(name)) {
             throw new VideoAlreadyExistsException();
         }
-        Video newVid = new Video(); // save the info but not the clip
+        Video newVid = new Video(
+                name,
+                "userId",
+                String.format("resources/video/%s", name),
+                true,
+                false
+        ); // save the info but not the clip
+
+        String originalFileName = file.getOriginalFilename();
+        String targetFileName = name + "-" + originalFileName;
+
+        Path targetPath = Paths.get("resources/video/", targetFileName);
+        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         videoRepository.save(newVid);
     }
 

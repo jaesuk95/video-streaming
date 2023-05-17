@@ -40,7 +40,7 @@ public class VideoServiceImpl implements VideoService {
         Video newVid = new Video(
                 name,
                 "userId",
-                String.format("resources/video/%s", name),
+                String.format("resources/video/%s.mp4", name),
                 true,
                 false
         ); // save the info but not the clip

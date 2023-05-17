@@ -1,4 +1,4 @@
-package com.example.videostreaming.domain.model;
+package com.example.videostreaming.model.video;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,9 @@ public class Video {
 
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private String userId;
     private String directory;
-    private String owner;
     private boolean isPrivate;
     private boolean isPaid;
 }
